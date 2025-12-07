@@ -1,0 +1,7 @@
+{
+  "name": "beat.installer",
+  "version": "1.0.0",
+  "displayName": "Beat Unity Installer",
+  "description": "Installs the Beat Unity registry and core package.",
+  "type": "tool"
+}
