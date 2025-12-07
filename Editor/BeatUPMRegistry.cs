@@ -5,6 +5,10 @@ using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 
+
+namespace Beat.UPM.Editor
+{
+    
 [InitializeOnLoad]
 public class BeatUPMRegistry
 {
@@ -101,4 +105,5 @@ public class BeatUPMRegistry
         public string url;
         public string[] scopes;
     }
+}
 }

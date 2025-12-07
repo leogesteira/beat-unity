@@ -1,0 +1,7 @@
+{
+  "name": "Beat.UPM.Editor",
+  "rootNamespace": "Beat.UPM.Editor",
+  "references": [],
+  "includePlatforms": ["Editor"],
+  "autoReferenced": false
+}
