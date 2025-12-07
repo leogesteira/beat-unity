@@ -1,9 +1,9 @@
 using System.IO;
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using System.Text;
 using System.Collections.Generic;
+using System.Linq;
 
 [InitializeOnLoad]
 public class BeatUnityInstaller
@@ -26,36 +26,49 @@ public class BeatUnityInstaller
 
     static void InstallRegistry()
     {
-        var path = Path.Combine(Directory.GetParent(Application.dataPath).FullName, "Packages/manifest.json");
-        var json = File.ReadAllText(path, Encoding.UTF8);
+        var manifestPath = Path.Combine(Directory.GetParent(Application.dataPath).FullName, "Packages/manifest.json");
 
-        if (json.Contains("\"beat\"")) return;
+        // Read without BOM
+        var raw = File.ReadAllText(manifestPath);
+        raw = RemoveBOM(raw);
 
-        var registryBlock =
-            "\"scopedRegistries\": [\n" +
-            "    {\n" +
-            "        \"name\": \"Beat\",\n" +
-            "        \"url\": \"https://beat-unity.com/\",\n" +
-            "        \"scopes\": [\"beat\"]\n" +
-            "    }\n" +
-            "],";
+        var manifest = JsonUtility.FromJson<ManifestWrapper>(raw);
 
-        if (json.Contains("\"scopedRegistries\""))
+        if (manifest.scopedRegistries == null)
+            manifest.scopedRegistries = new List<ScopedRegistry>();
+
+        // Already installed?
+        if (manifest.scopedRegistries.Any(r => r.name == "Beat Unity"))
+            return;
+
+        manifest.scopedRegistries.Add(new ScopedRegistry
         {
-            json = json.Replace("\"scopedRegistries\": [", registryBlock.Split('[')[0] + "[");
-        }
-        else
-        {
-            var idx = json.IndexOf("{") + 1;
-            json = json.Insert(idx, "\n  " + registryBlock + "\n");
-        }
+            name = "Beat Unity",
+            url = "https://beat-unity.com/",
+            scopes = new[] { "beat" }
+        });
 
-        File.WriteAllText(path, json, Encoding.UTF8);
+        // Serialize back (Unity's JsonUtility cannot handle lists at root, wrap class required)
+        var json = JsonUtility.ToJson(manifest, true);
+
+        // Write as UTF-8 *without* BOM
+        File.WriteAllText(manifestPath, json, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
+    }
+
+    static string RemoveBOM(string text)
+    {
+        if (string.IsNullOrEmpty(text)) return text;
+
+        // Remove UTF-8 BOM if present
+        if (text.Length > 0 && text[0] == '\uFEFF')
+            return text.Substring(1);
+
+        return text;
     }
 
     static void InstallCorePackage()
     {
-        var request = UnityEditor.PackageManager.Client.Add("beat.core");
+        UnityEditor.PackageManager.Client.Add("beat.core");
     }
 
     static void TryDeleteSelf()
@@ -72,5 +85,20 @@ public class BeatUnityInstaller
         if (File.Exists(meta)) File.Delete(meta);
 
         AssetDatabase.Refresh();
+    }
+
+    [System.Serializable]
+    public class ManifestWrapper
+    {
+        public List<ScopedRegistry> scopedRegistries;
+        public Dictionary<string, string> dependencies;
+    }
+
+    [System.Serializable]
+    public class ScopedRegistry
+    {
+        public string name;
+        public string url;
+        public string[] scopes;
     }
 }
