@@ -6,9 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 
 [InitializeOnLoad]
-public class BeatUnityInstaller
+public class BeatUPMRegistry
 {
-    static BeatUnityInstaller()
+    static BeatUPMRegistry()
     {
         if (EditorPrefs.GetBool("beat_unity_installed")) return;
         EditorApplication.update += Run;
@@ -20,7 +20,7 @@ public class BeatUnityInstaller
         InstallRegistry();
         InstallCorePackage();
         EditorPrefs.SetBool("beat_unity_installed", true);
-        EditorUtility.DisplayDialog("Beat Unity", "Registry installed.", "OK");
+        EditorUtility.DisplayDialog("Beat", "Registry installed.", "OK");
         TryDeleteSelf();
     }
 
@@ -38,12 +38,12 @@ public class BeatUnityInstaller
             manifest.scopedRegistries = new List<ScopedRegistry>();
 
         // Already installed?
-        if (manifest.scopedRegistries.Any(r => r.name == "Beat Unity"))
+        if (manifest.scopedRegistries.Any(r => r.name == "Beat"))
             return;
 
         manifest.scopedRegistries.Add(new ScopedRegistry
         {
-            name = "Beat Unity",
+            name = "Beat",
             url = "https://beat-unity.com/",
             scopes = new[] { "beat" }
         });
@@ -73,7 +73,7 @@ public class BeatUnityInstaller
 
     static void TryDeleteSelf()
     {
-        var scriptPath = AssetDatabase.FindAssets("BeatUnityInstaller")
+        var scriptPath = AssetDatabase.FindAssets("BeatUPMRegistry")
             .Select(AssetDatabase.GUIDToAssetPath)
             .FirstOrDefault();
 

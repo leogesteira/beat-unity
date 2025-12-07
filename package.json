@@ -1,7 +1,7 @@
 {
-  "name": "beat.installer",
+  "name": "beat.upm",
   "version": "1.0.0",
-  "displayName": "Beat Unity Installer",
+  "displayName": "Beat UPM Registry",
   "description": "Installs the Beat Unity registry and core package.",
   "type": "tool"
 }
