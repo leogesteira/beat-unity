@@ -1,8 +1,11 @@
 {
   "name": "beat.upm",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "displayName": "Beat UPM Registry",
   "description": "Installs the Beat Unity registry and core package.",
+  "author": {
+    "name": "Leo Gesteira"
+  },
   "type": "tool",
   "dependencies": {
   }
