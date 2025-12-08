@@ -26,7 +26,7 @@ namespace Beat.UPM.Editor
             EditorApplication.update += Run;
         }
 
-        [MenuItem("Tools/Beat/Add UPM Registry")]
+        [MenuItem("Tools/Beat/Package Manager/Setup UPM Registry", priority = 1)]
         static void Run()
         {
             EditorApplication.update -= Run;
