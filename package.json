@@ -3,5 +3,7 @@
   "version": "1.0.0",
   "displayName": "Beat UPM Registry",
   "description": "Installs the Beat Unity registry and core package.",
-  "type": "tool"
+  "type": "tool",
+  "dependencies": {
+  }
 }
